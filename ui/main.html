@@ -1,0 +1,60 @@
+<html>
+    <head>
+        <meta http-equiv="charset" content="utf-8">
+        <script src="jquery-3.2.1.min.js"></script>
+        <script type="text/javascript" src="qrc:///qtwebchannel/qwebchannel.js"></script>        
+        <script src="main.js"></script>
+        <link rel="stylesheet" type="text/css" href="main.css" />
+        <title></title>
+    </head>
+
+    <body>
+        <div class="toplevel_wrapper"><div>
+            <div class="center">
+                <p class="bigtitle">Draughts</p>
+            </div>
+            <div id="role" class="center">
+                <p class="title">Run as</p>
+                <table class="role_choose">
+                    <tr>
+                        <td onclick="onRoleChosen(true)">Server</td>
+                        <td onclick="onRoleChosen(false)">Client</td>
+                    </tr>
+                </table>
+            </div>
+            <div id="server_info" class="center">
+                <p class="title">Run as</p>
+                <table class="role_choose">
+                    <tr>
+                        <td onclick="onRoleChosen(true)">Server</td>
+                        <td onclick="onRoleChosen(false)">Client</td>
+                    </tr>
+                </table>
+            </div>
+            <div id="game" class="center" style="display: none;">
+                <div>
+                    <table class="table_main">
+                    </table>
+                </div>
+            </div>
+        </div></div>
+    </body>
+
+    <script lang="javascript">
+        document.oncontextmenu = function(e) {
+            e.preventDefault();
+        }
+
+        initGameTable();
+
+        new QWebChannel(qt.webChannelTransport, function(channel) {
+            window.channel = channel.objects.channel;
+    
+            channel.displayServerInfo.connect(function(info) {
+                inf = JSON.parse(info);
+            })
+        });
+
+        $("#role").hide();
+    </script>
+</html>

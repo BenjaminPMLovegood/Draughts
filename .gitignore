@@ -1,0 +1,9 @@
+[Dd]ebug/
+
+
+[Rr]elease/
+
+Makefile*
+.qmake.stash
+*.opt
+*.pro.user

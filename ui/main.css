@@ -1,0 +1,89 @@
+* {
+    user-select:none;
+}
+
+.toplevel_wrapper {
+    width: 620px;
+    height: 670px;
+    margin: auto auto;
+
+    justify-content: center;
+    align-items: center;
+    display: -webkit-flex;
+}
+
+.center {
+    margin: auto auto;
+    height: auto;
+    width: auto;
+
+    text-align: center;
+}
+
+.bigtitle {
+    font-family: "Microsoft YaHei";
+    font-size: 48px;
+    margin: 20px auto;
+    width: auto;
+}
+
+.title {
+    font-family: "Microsoft YaHei";
+    font-size: 24px;
+    margin: 10px auto;
+    width: auto;
+}
+
+table.table_main {
+    margin: auto;
+
+    border: #724938 solid 16px;
+    border-collapse: separate;
+    border-spacing: 0px;
+
+    font-family: "Microsoft YaHei";
+    font-size: 24px;
+}
+
+table.table_main tr {
+    border: 0px;
+    margin: 0px;
+}
+
+table.table_main tr td.cell {
+    height: 40px;
+    width: 40px;
+    line-height: 40px;
+
+    text-align: center;
+    border: 0px;
+}
+
+table.table_main tr td.cell_white {
+    background-color: #EEDED7;
+}
+
+table.table_main tr td.cell_dark {
+    background-color: #B35C37;
+}
+
+table.role_choose {
+    margin: auto;
+
+    border: 0px;
+    border-collapse: separate;
+    border-spacing: 24px;
+
+    font-family: "Microsoft YaHei";
+    font-size: 18px;
+}
+
+table.role_choose tr td {
+    height: 40px;
+    line-height: 40px;
+    padding: 1px 10px;
+    
+    text-align: center;
+    border: 0px;
+    background-color: #EEDED7;
+}
