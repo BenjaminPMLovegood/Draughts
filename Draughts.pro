@@ -10,12 +10,17 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     commonheader.cpp \
-    channel.cpp
+    channel.cpp \
+    board.cpp
 
 HEADERS += \
     mainwindow.h \
     commonheader.h \
-    channel.h
+    channel.h \
+    board.h
 
 FORMS += \
     mainwindow.ui
+
+RESOURCES += \
+    ui.qrc

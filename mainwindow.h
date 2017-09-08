@@ -5,6 +5,7 @@
 #include <QMainWindow>
 #include <QWebChannel>
 #include <QWebEngineView>
+#include "channel.h"
 
 namespace Ui {
     class MainWindow;
@@ -20,7 +21,8 @@ public:
 private:
     Ui::MainWindow *ui;
 
-    QWebChannel *channel;
+    QWebChannel *webChannel;
+    Channel *channel;
 };
 
 #endif  // MAINWINDOW_H

@@ -7,12 +7,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     this->setFixedSize(this->size());
 
-    channel = new QWebChannel(this);
-    // channel->registerObject(???, ???);
+    channel = new Channel();
+
+    webChannel = new QWebChannel(this);
+    webChannel->registerObject(QString("channel"), channel);
 
     QWebEngineView *view = new QWebEngineView(this);
     view->setGeometry(0, 0, this->width(), this->height());
-    view->page()->setWebChannel(channel);
+    view->page()->setWebChannel(webChannel);
 
     view->load(QUrl("qrc:/ui/main.html"));
     view->show();

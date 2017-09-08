@@ -25,3 +25,7 @@ function initGameTable() {
 }
 
 function onRoleChosen(v) { window.channel.onRoleChosen(v); }
+
+function onCellClick(i, j) {
+    window.channel.onCellClick(i, j);
+}
