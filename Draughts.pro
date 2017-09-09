@@ -10,17 +10,39 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     commonheader.cpp \
-    channel.cpp \
-    board.cpp
+    board.cpp \
+    draughtsboard.cpp \
+    startuppage.cpp \
+    connecttoserver.cpp \
+    qnumberinput.cpp \
+    gameserver.cpp \
+    serversettings.cpp \
+    waiting.cpp \
+    gameclient.cpp \
+    customboard.cpp
 
 HEADERS += \
     mainwindow.h \
     commonheader.h \
-    channel.h \
-    board.h
+    board.h \
+    draughtsboard.h \
+    startuppage.h \
+    connecttoserver.h \
+    qnumberinput.h \
+    gameserver.h \
+    serversettings.h \
+    main.h \
+    waiting.h \
+    gameclient.h \
+    customboard.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    startuppage.ui \
+    connecttoserver.ui \
+    serversettings.ui \
+    waiting.ui \
+    customboard.ui
 
 RESOURCES += \
     ui.qrc

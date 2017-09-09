@@ -5,7 +5,7 @@
 #include <QMainWindow>
 #include <QWebChannel>
 #include <QWebEngineView>
-#include "channel.h"
+#include "draughtsboard.h"
 
 namespace Ui {
     class MainWindow;
@@ -18,11 +18,16 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+protected:
+    void paintEvent(QPaintEvent *event) override;
+
 private:
     Ui::MainWindow *ui;
 
-    QWebChannel *webChannel;
-    Channel *channel;
+    DraughtsBoard *board;
+
+public slots:
+    void onCellClick(int row, int column);
 };
 
 #endif  // MAINWINDOW_H
