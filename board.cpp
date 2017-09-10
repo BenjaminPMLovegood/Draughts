@@ -217,3 +217,10 @@ char Board::cell(int r, int c) const {
 void Board::setCell(int r, int c, char v) {
     _board[r][c] = v;
 }
+
+QString Board::toString() {
+    QString rv;
+
+    for (int i = 0; i < 50; ++i) rv += _board[fromIdToRow(i)][fromIdToColumn(i)];
+    return rv;
+}

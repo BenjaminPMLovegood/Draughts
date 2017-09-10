@@ -59,6 +59,10 @@ void MainWindow::onCellClick(int row, int column) {
         status->setCell(r, c, ' ');
 
         client->sendData(QString("move ") + QString::number(selection) + ' ' + QString::number(id));
+
+        QSound::play(QString("://wav/move.wav"));
+    } else {
+        QSound::play("://wav/selected.wav");
     }
 
     for (int i = 0; i < 50; ++i) selected[i] = (i == selection || i == id);
@@ -116,10 +120,11 @@ void MainWindow::onMessage(QString msg) {
 
         this->side = 1 + param[0].toInt();
         this->timeLeft = param[1].toInt();
+        int whoFirst = param[2].toInt();
 
         refreshTime();
 
-        if (this->side == 1) myTurnBegins();
+        if (this->side == whoFirst) myTurnBegins();
     } else if (fi == "fi") {
         QString cont = msg.mid(7);
         int param = cont.toInt();
@@ -183,6 +188,8 @@ void MainWindow::onMessage(QString msg) {
         for (int i = 0; i < 50; ++i) selected[i] = (i == from || i == to);
 
         selection = to;
+
+        QSound::play(QString("://wav/move.wav"));
 
         repaint();
     }
@@ -253,6 +260,9 @@ void MainWindow::tick() {
 }
 
 void MainWindow::endGame(QString info, int code) {
+    if (code == 1) QSound::play("://wav/lose.wav");
+    else if (code == 2) QSound::play("://wav/win.wav");
+
     GameEnd::showGameEnd(info, code);
     this->close();
 }

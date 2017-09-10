@@ -10,7 +10,7 @@ class ServerThread : public QThread {
     Q_OBJECT
 
 public:
-    ServerThread(int port, int timeLimit = defaultTimeLimit, QString status = defaultInitStatus);
+    ServerThread(int port, int timeLimit = defaultTimeLimit, QString status = defaultInitStatus, bool whiteFirst = false);
 
 protected:
     void run();

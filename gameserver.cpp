@@ -6,11 +6,12 @@
 GameServer::GameServer(QObject *parent) : QObject(parent) {
 }
 
-void GameServer::setupServer(int port, int timeLimit, QString initStatus) {
+void GameServer::setupServer(int port, int timeLimit, QString initStatus, bool whiteFirst) {
     this->server = new QTcpServer(this);
     this->port = port;
     this->timeLimit = timeLimit;
     this->init = initStatus;
+    this->whiteFirst = whiteFirst;
 }
 
 bool GameServer::waitForTwoClients() {
@@ -48,8 +49,8 @@ bool GameServer::launchServerSync() {
     qDebug() << "[Server]game start";
     black->write(QTextCodec::codecForName("Utf-8")->fromUnicode(QString("broad ") + init + '$'));
     white->write(QTextCodec::codecForName("Utf-8")->fromUnicode(QString("broad ") + init + '$'));
-    black->write(QTextCodec::codecForName("Utf-8")->fromUnicode(QString("you 0 ") + QString::number(timeLimit) + '$'));
-    white->write(QTextCodec::codecForName("Utf-8")->fromUnicode(QString("you 1 ") + QString::number(timeLimit) + '$'));
+    black->write(QTextCodec::codecForName("Utf-8")->fromUnicode(QString("you 0 ") + QString::number(timeLimit) + (whiteFirst ? " 2$"  : " 1$")));
+    white->write(QTextCodec::codecForName("Utf-8")->fromUnicode(QString("you 1 ") + QString::number(timeLimit) + (whiteFirst ? " 2$"  : " 1$")));
 
     black->flush(); white->flush();
     qDebug() << "[Server]init data written";

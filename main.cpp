@@ -5,6 +5,7 @@
 
 #include "commonheader.h"
 #include "connecttoserver.h"
+#include "customboard.h"
 #include "main.h"
 #include "mainwindow.h"
 #include "serversettings.h"
@@ -13,9 +14,9 @@
 
 #define var auto
 
-ServerThread::ServerThread(int port, int timeLimit, QString status) {
+ServerThread::ServerThread(int port, int timeLimit, QString status, bool whiteFirst) {
     server = new GameServer(this);
-    server->setupServer(port, timeLimit, status);
+    server->setupServer(port, timeLimit, status, whiteFirst);
 }
 
 void ServerThread::run() {
@@ -43,7 +44,16 @@ int main(int argc, char *argv[]) {
     qDebug() << (isServer ? "server" : "client");
 
     if (isServer) {
+        int timeLimit = defaultTimeLimit;
         QString initStatus = defaultInitStatus;
+        bool whiteFirst = false;
+
+        CustomBoard board;
+        board.show();
+        board.exec();
+        initStatus = board.res;
+        timeLimit = board.tl;
+        whiteFirst = board.whiteFirst;
 
         ServerSettings settings;
         settings.show();
@@ -52,7 +62,7 @@ int main(int argc, char *argv[]) {
         serverPort = settings.portSelected;
         if (!~serverPort) return 0;
 
-        server = new ServerThread(serverPort);
+        server = new ServerThread(serverPort, timeLimit, initStatus, whiteFirst);
         server->start();
         server->moveToThread(server);
 

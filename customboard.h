@@ -18,15 +18,16 @@ public:
     ~CustomBoard();
 
     QString res = defaultInitStatus;
+    int tl = defaultTimeLimit;
+    bool whiteFirst = false;
 
 private slots:
     void on_ok_clicked();
-
     void on_makeDefault_clicked();
-
     void on_loadA_clicked();
-
     void on_loadB_clicked();
+
+    void onCellClick(int i, int j);
 
 private:
     Ui::CustomBoard *ui;

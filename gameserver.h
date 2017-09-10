@@ -11,7 +11,7 @@ class GameServer : public QObject {
 public:
     explicit GameServer(QObject *parent = nullptr);
 
-    void setupServer(int port, int timeLimit = defaultTimeLimit, QString initStatus = defaultInitStatus);
+    void setupServer(int port, int timeLimit = defaultTimeLimit, QString initStatus = defaultInitStatus, bool whiteFirst = false);
     bool waitForTwoClients(); // start listening and return true after 2 clients connected
     bool launchServerSync(); // start the game, return whether the game ends successfully after the end
 
@@ -21,6 +21,7 @@ public:
 private:
     int port, timeLimit;
     QString init;
+    bool whiteFirst;
 
     int cnt;
 

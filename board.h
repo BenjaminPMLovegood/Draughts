@@ -28,6 +28,8 @@ public:
 
     char cell(int r, int c) const;
     void setCell(int r, int c, char v);
+
+    QString toString();
 };
 
 #endif  // BOARD_H

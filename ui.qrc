@@ -1,4 +1,8 @@
 <RCC>
     <qresource prefix="/">
+        <file>wav/lose.wav</file>
+        <file>wav/move.wav</file>
+        <file>wav/selected.wav</file>
+        <file>wav/win.wav</file>
     </qresource>
 </RCC>

@@ -6,6 +6,7 @@
 #include <QWebChannel>
 #include <QWebEngineView>
 #include <QTimer>
+#include <QSound>
 #include "draughtsboard.h"
 #include "gameclient.h"
 #include "board.h"
