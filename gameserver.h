@@ -19,7 +19,8 @@ public:
     QHostAddress getWhiteAddr();
 
 private:
-    int port;
+    int port, timeLimit;
+    QString init;
 
     int cnt;
 

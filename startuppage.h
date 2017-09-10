@@ -15,6 +15,7 @@ public:
     explicit StartupPage(QWidget *parent = 0);
     ~StartupPage();
 
+    bool exit;
     bool isServer;
 
 private:

@@ -14,6 +14,9 @@ public:
     explicit Waiting(QWidget *parent = 0);
     ~Waiting();
 
+protected:
+    void paintEvent(QPaintEvent *ev);
+
 private:
     Ui::Waiting *ui;
 };

@@ -19,7 +19,9 @@ SOURCES += \
     serversettings.cpp \
     waiting.cpp \
     gameclient.cpp \
-    customboard.cpp
+    customboard.cpp \
+    possiblemovetreenode.cpp \
+    gameend.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -34,7 +36,9 @@ HEADERS += \
     main.h \
     waiting.h \
     gameclient.h \
-    customboard.h
+    customboard.h \
+    possiblemovetreenode.h \
+    gameend.h
 
 FORMS += \
     mainwindow.ui \
@@ -42,7 +46,8 @@ FORMS += \
     connecttoserver.ui \
     serversettings.ui \
     waiting.ui \
-    customboard.ui
+    customboard.ui \
+    gameend.ui
 
 RESOURCES += \
     ui.qrc

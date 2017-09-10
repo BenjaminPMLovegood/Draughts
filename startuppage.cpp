@@ -12,6 +12,8 @@ StartupPage::StartupPage(QWidget *parent)
 
     connect(ui->runAsServer, SIGNAL(clicked()), this, SLOT(serverChosen()));
     connect(ui->runAsClient, SIGNAL(clicked()), this, SLOT(clientChosen()));
+
+    exit = true;
 }
 
 StartupPage::~StartupPage() { delete ui; }
@@ -21,5 +23,5 @@ void StartupPage::paintEvent(QPaintEvent *ev) {
     this->QDialog::paintEvent(ev);
 }
 
-void StartupPage::serverChosen() { this->isServer = true; this->close(); }
-void StartupPage::clientChosen() { this->isServer = false; this->close(); }
+void StartupPage::serverChosen() { exit = false; this->isServer = true; this->close(); }
+void StartupPage::clientChosen() { exit = false; this->isServer = false; this->close(); }

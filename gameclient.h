@@ -16,7 +16,7 @@ signals:
     void onMessage(QString message);
     void onConnected();
 
-private:
+private:public:
     QTcpSocket *sock;
 
 private slots:

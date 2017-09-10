@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>650</width>
-    <height>700</height>
+    <width>810</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,50 @@
   <property name="windowTitle">
    <string>Draughts</string>
   </property>
-  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QLCDNumber" name="time">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>20</y>
+      <width>270</width>
+      <height>120</height>
+     </rect>
+    </property>
+    <property name="smallDecimalPoint">
+     <bool>false</bool>
+    </property>
+    <property name="value" stdset="0">
+     <double>192.599999999999994</double>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="surrender">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>160</y>
+      <width>270</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Surrender</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="offerADraw">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>210</y>
+      <width>270</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Offer A Draw</string>
+    </property>
+   </widget>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

@@ -37,10 +37,14 @@ int main(int argc, char *argv[]) {
     page.show();
     page.exec();
 
+    if (page.exit) return 0;
+
     var isServer = page.isServer;
     qDebug() << (isServer ? "server" : "client");
 
     if (isServer) {
+        QString initStatus = defaultInitStatus;
+
         ServerSettings settings;
         settings.show();
         settings.exec();
@@ -52,14 +56,14 @@ int main(int argc, char *argv[]) {
         server->start();
         server->moveToThread(server);
 
-        client.connectToServer(QHostAddress("127.0.0.1"), serverPort);
+        client.connectToServer(getCurrentInterfaceAddress().ip(), serverPort);
 
         Waiting waitingPage;
         QObject::connect(server, SIGNAL(onClientsConnected()), &waitingPage, SLOT(close()));
         waitingPage.show();
         waitingPage.exec();
 
-        serverAddr = "127.0.0.1";
+        serverAddr = getCurrentInterfaceAddress().ip().toString();
     } else {
         ConnectToServer conn;
         conn.show();
@@ -67,6 +71,8 @@ int main(int argc, char *argv[]) {
 
         serverAddr = conn.serverIp;
         serverPort = conn.serverPort;
+
+        if (!~serverPort) return 0;
 
         client.connectToServer(QHostAddress(serverAddr), serverPort);
 
@@ -76,6 +82,10 @@ int main(int argc, char *argv[]) {
         waitingPage.exec();
     }
 
-    var returnValue = app.exec();
-    return returnValue;
+    MainWindow mw(&client);
+    mw.show();
+    int rv = app.exec();
+
+    client.sock->disconnectFromHost();
+    return rv;
 }

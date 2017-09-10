@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Waiting</class>
- <widget class="QDialog" name="Waiting">
+ <class>GameEnd</class>
+ <widget class="QDialog" name="GameEnd">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,9 +11,9 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Waiting</string>
+   <string>Dialog</string>
   </property>
-  <widget class="QLabel" name="label">
+  <widget class="QLabel" name="result">
    <property name="geometry">
     <rect>
      <x>80</x>
@@ -35,7 +35,7 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label_2">
+  <widget class="QLabel" name="desc">
    <property name="geometry">
     <rect>
      <x>60</x>

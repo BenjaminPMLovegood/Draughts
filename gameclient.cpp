@@ -28,6 +28,8 @@ void GameClient::onSocketData() {
     QString cont = QTextCodec::codecForName("Utf-8")->toUnicode(data);
     auto cmds = cont.split('$');
 
+    qDebug() << "[Client]socket recieved raw data: " << cont;
+
     for (QString v : cmds) {
         if (v.length() > 0) emit onMessage(v);
     }

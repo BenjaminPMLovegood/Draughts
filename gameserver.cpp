@@ -9,6 +9,8 @@ GameServer::GameServer(QObject *parent) : QObject(parent) {
 void GameServer::setupServer(int port, int timeLimit, QString initStatus) {
     this->server = new QTcpServer(this);
     this->port = port;
+    this->timeLimit = timeLimit;
+    this->init = initStatus;
 }
 
 bool GameServer::waitForTwoClients() {
@@ -43,23 +45,37 @@ bool isGG(const QByteArray &arr) {
 }
 
 bool GameServer::launchServerSync() {
+    qDebug() << "[Server]game start";
+    black->write(QTextCodec::codecForName("Utf-8")->fromUnicode(QString("broad ") + init + '$'));
+    white->write(QTextCodec::codecForName("Utf-8")->fromUnicode(QString("broad ") + init + '$'));
+    black->write(QTextCodec::codecForName("Utf-8")->fromUnicode(QString("you 0 ") + QString::number(timeLimit) + '$'));
+    white->write(QTextCodec::codecForName("Utf-8")->fromUnicode(QString("you 1 ") + QString::number(timeLimit) + '$'));
+
+    black->flush(); white->flush();
+    qDebug() << "[Server]init data written";
+
     bool gg = false;
 
     while (!gg) {
-        QThread::sleep(50);
+        black->waitForReadyRead(50);
+        white->waitForReadyRead(50);
 
         if (black->bytesAvailable() > 0) {
             auto data = black->readAll();
+            qDebug() << "[Server]data from black:" << data.data();
 
             gg = isGG(data);
             white->write(data);
+            white->flush();
         }
 
         if (white->bytesAvailable() > 0) {
             auto data = white->readAll();
+            qDebug() << "[Server]data from white:" << data.data();
 
             gg = isGG(data);
             black->write(data);
+            black->flush();
         }
     }
 

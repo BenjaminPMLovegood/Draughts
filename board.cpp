@@ -13,132 +13,207 @@ Board::Board(QString status) {
     }
 }
 
-bool Board::canMovePiece(int from, int to, int *captured) {
-    int r1 = fromIdToRow(from), c1 = fromIdToColumn(from);
-    int r2 = fromIdToRow(to), c2 = fromIdToColumn(to);
-    int rd = sign(r2 - r1), cd = sign(c2 - c1);
-    int cnt = abs(rd), vcnt = abs(cd);
-    int side1 = fromCharToSide(this->_board[r1][c1]);
-    int side2 = fromCharToSide(this->_board[r2][c2]);
-    if (side2 || !side1) return false;
-    if (cnt != vcnt) return false;
+int d[4][2] = { { 1, 1 }, { 1, -1 }, { -1, 1 }, { -1, -1 } }; // first 2 : black -> white, last 2  : white -> black
+void Board::dfsCap(PossibleMoveTreeNode *currNode, int currPos, int side, bool captured[50], bool isKing) {
+    currNode->end = true;
 
-    bool isKing = !(this->_board[r1][c1] & 32);
+    int r = fromIdToRow(currPos), c = fromIdToColumn(currPos);
 
-    if (isKing) {
-        bool anyCaptured = false;
-        int currCaptured;
+    for (int i = 0; i < 4; ++i) {
+        int dr = d[i][0], dc = d[i][1];
 
-        for (int i = 1; i < cnt; ++i) {
-            int rx = r1 + rd * i, cx = c1 + cd * i;
-            int sidex = fromCharToSide(this->_board[rx][cx]);
+        if (isKing) {
+            int rm = r, cm = c;
+            for (;;) {
+                rm += dr; cm += dc;
+                if (!inBoard(rm, cm)) break;
+                if (captured[fromCoordinatesToId(rm, cm)]) break;
 
-            if (sidex) {
-                if (sidex == side1) return false;
+                int sideh = fromCharToSide(_board[rm][cm]);
+                if (sideh == side) break;
 
-                if ((sidex ^ side1) == 3) {
-                    if (anyCaptured) return false;
+                if ((sideh ^ side) == 3) {
+                    int rd = rm, cd = cm;
 
-                    anyCaptured = true;
-                    currCaptured = fromCoordinatesToId(rx, cx);
+                    for (;;) {
+                        rd += dr; cd += dc;
+                        if (!inBoard(rd, cd)) break;
+                        if (captured[fromCoordinatesToId(rd, cd)]) break;
+
+                        int sided = fromCharToSide(_board[rd][cd]);
+                        if (sided) break;
+
+                        int nxPos = fromCoordinatesToId(rd, cd);
+                        currNode->end = false;
+                        currNode->sub[nxPos] = new PossibleMoveTreeNode();
+
+                        captured[fromCoordinatesToId(rm, cm)] = true;
+                        dfsCap(currNode->sub[nxPos], nxPos, side, captured, isKing);
+                        captured[fromCoordinatesToId(rm, cm)] = false;
+                    }
+
+                    break;
+                }
+            }
+        } else {
+            int rm = r + dr, cm = c + dc;
+            int rd = rm + dr, cd = cm + dc;
+
+            if (!inBoard(rm, cm) || !inBoard(rd, cd)) continue;
+            if (captured[fromCoordinatesToId(rm, cm)]) continue;
+
+            int sidem = fromCharToSide(_board[rm][cm]);
+            int sided = fromCharToSide(_board[rd][cd]);
+
+            if (sided) continue;
+            if ((sidem ^ side) != 3) continue;
+
+            int nxPos = fromCoordinatesToId(rd, cd);
+            currNode->end = false;
+            currNode->sub[nxPos] = new PossibleMoveTreeNode();
+
+            captured[fromCoordinatesToId(rm, cm)] = true;
+            dfsCap(currNode->sub[nxPos], nxPos, side, captured, isKing);
+            captured[fromCoordinatesToId(rm, cm)] = false;
+        }
+    }
+
+    if (currNode->end) { currNode->captured = 0; return; }
+    int maxCap = 0;
+    for (int i = 0; i < 50; ++i) {
+        if (currNode->sub[i] != nullptr) {
+            if (currNode->sub[i]->captured > maxCap) maxCap = currNode->sub[i]->captured;
+        }
+    }
+
+    for (int i = 0; i < 50; ++i) {
+        if (currNode->sub[i] != nullptr) {
+            if (currNode->sub[i]->captured < maxCap) {
+                delete currNode->sub[i];
+                currNode->sub[i] = nullptr;
+            }
+        }
+    }
+
+    currNode->captured = maxCap + 1;
+}
+
+void Board::findStep(PossibleMoveTreeNode *currNode, int currPos, int side, bool isKing) {
+    currNode->end = true;
+    currNode->captured = 0;
+
+    int r = fromIdToRow(currPos), c = fromIdToColumn(currPos);
+
+    for (int i = 0; i < 4; ++i) {
+        int dr = d[i][0], dc = d[i][1];
+
+        if (isKing) {
+            int rd = r, cd = c;
+            for (;;) {
+                rd += dr; cd += dc;
+                if (!inBoard(rd, cd)) break;
+
+                int sideh = fromCharToSide(_board[rd][cd]);
+                if (sideh) break;
+
+                int nxPos = fromCoordinatesToId(rd, cd);
+
+                currNode->end = false;
+                currNode->sub[nxPos] = new PossibleMoveTreeNode();
+                currNode->sub[nxPos]->captured = 0;
+                currNode->sub[nxPos]->end = true;
+            }
+        } else {
+            int rd = r + dr, cd = c + dc;
+
+            if (side == 1 && i > 1) continue;
+            if (side == 2 && i < 2) continue;
+            if (!inBoard(rd, cd)) continue;
+
+            int sided = fromCharToSide(_board[rd][cd]);
+            if (sided) continue;
+
+            int nxPos = fromCoordinatesToId(rd, cd);
+            currNode->end = false;
+            currNode->sub[nxPos] = new PossibleMoveTreeNode();
+            currNode->sub[nxPos]->captured = 0;
+            currNode->sub[nxPos]->end = true;
+        }
+    }
+}
+
+PossibleMoveTreeNode* Board::possibleMoves(int side) {
+    auto rv = new PossibleMoveTreeNode();
+    rv->end = true;
+
+    bool captured[50];
+    for (int i = 0; i < 50; ++i) captured[i] = false;
+
+    for (int i = 0; i < 50; ++i) {
+        int r = fromIdToRow(i), c = fromIdToColumn(i);
+
+        if (fromCharToSide(_board[r][c]) != side) continue;
+
+        rv->sub[i] = new PossibleMoveTreeNode();
+
+        char cache = _board[r][c];
+        _board[r][c] = ' ';
+        dfsCap(rv->sub[i], i, side, captured, !(cache & 32));
+        _board[r][c] = cache;
+
+        if (!rv->sub[i]->end) rv->end = false;
+        else {
+            delete rv->sub[i];
+            rv->sub[i] = nullptr;
+        }
+    }
+
+    if (!rv->end) {
+        int maxCap = 0;
+        for (int i = 0; i < 50; ++i) {
+            if (rv->sub[i] != nullptr) {
+                if (rv->sub[i]->captured > maxCap) maxCap = rv->sub[i]->captured;
+            }
+        }
+
+        for (int i = 0; i < 50; ++i) {
+            if (rv->sub[i] != nullptr) {
+                if (rv->sub[i]->captured < maxCap) {
+                    delete rv->sub[i];
+                    rv->sub[i] = nullptr;
                 }
             }
         }
 
-        if (anyCaptured && captured != nullptr) *captured = currCaptured;
-        return true;
+        rv->captured = maxCap + 1;
     } else {
-        if (cnt == 1) {
-            if ((side1 == 1 && from < to) || (side1 == 2 && from < to)) return true;
-            else return false;
-        } else if (cnt == 2) {
-            int rx = r1 + rd, cx = c1 + cd;
-            int sidex = fromCharToSide(this->_board[rx][cx]);
+        for (int i = 0; i < 50; ++i) {
+            int r = fromIdToRow(i), c = fromIdToColumn(i);
 
-            if ((sidex ^ side1) == 3) {
-                if (captured != nullptr) *captured = fromCoordinatesToId(rx, cx);
-                return true;
-            }
+            if (fromCharToSide(_board[r][c]) != side) continue;
 
-            return false;
-        } else {
-            return false;
-        }
-    }
-}
+            rv->sub[i] = new PossibleMoveTreeNode();
 
-bool Board::canMovePieceIfSide(int from, int to, int side, bool isKing, int *captured) {
-    int r1 = fromIdToRow(from), c1 = fromIdToColumn(from);
-    int r2 = fromIdToRow(to), c2 = fromIdToColumn(to);
-    int rd = sign(r2 - r1), cd = sign(c2 - c1);
-    int cnt = abs(rd), vcnt = abs(cd);
-    int &side1 = side;
-    int side2 = fromCharToSide(this->_board[r2][c2]);
-    if (side2 || !side1) return false;
-    if (cnt != vcnt) return false;
+            char cache = _board[r][c];
+            _board[r][c] = ' ';
+            findStep(rv->sub[i], i, side, !(cache & 32));
+            _board[r][c] = cache;
 
-    if (isKing) {
-        bool anyCaptured = false;
-        int currCaptured;
-
-        for (int i = 1; i < cnt; ++i) {
-            int rx = r1 + rd * i, cx = c1 + cd * i;
-            int sidex = fromCharToSide(this->_board[rx][cx]);
-
-            if (sidex) {
-                if (sidex == side1) return false;
-
-                if ((sidex ^ side1) == 3) {
-                    if (anyCaptured) return false;
-
-                    anyCaptured = true;
-                    currCaptured = fromCoordinatesToId(rx, cx);
-                }
+            if (!rv->sub[i]->end) rv->end = false;
+            else {
+                delete rv->sub[i];
+                rv->sub[i] = nullptr;
             }
         }
-
-        if (anyCaptured && captured != nullptr) *captured = currCaptured;
-        return true;
-    } else {
-        if (cnt == 1) {
-            if ((side1 == 1 && from < to) || (side1 == 2 && from < to)) return true;
-            else return false;
-        } else if (cnt == 2) {
-            int rx = r1 + rd, cx = c1 + cd;
-            int sidex = fromCharToSide(this->_board[rx][cx]);
-
-            if ((sidex ^ side1) == 3) {
-                if (captured != nullptr) *captured = fromCoordinatesToId(rx, cx);
-                return true;
-            }
-
-            return false;
-        } else {
-            return false;
-        }
-    }
-}
-
-bool Board::movePiece(int from, int to, int *captured) {
-    if (!canMovePiece(from, to)) return false;
-
-    int r1 = fromIdToRow(from), c1 = fromIdToColumn(from);
-    int r2 = fromIdToRow(to), c2 = fromIdToColumn(to);
-    int rd = sign(r2 - r1), cd = sign(c2 - c1);
-    int cnt = abs(rd);
-    int side = fromCharToSide(this->_board[r1][c1]);
-
-    for (int i = 1; i < cnt; ++i) {
-        int rx = r1 + rd * i, cx = c1 + cd * i;
-        int sidex = fromCharToSide(this->_board[rx][cx]);
-
-        this->_board[rx][cx] = ' ';
-        if ((sidex ^ side) == 3 && captured != nullptr) *captured = fromCoordinatesToId(rx, cx);
     }
 
-    return true;
+    return rv;
 }
 
-QVector<QString> Board::possibleMoves(int side) {
-    return QVector<QString>();
+char Board::cell(int r, int c) const {
+    return _board[r][c];
+}
+
+void Board::setCell(int r, int c, char v) {
+    _board[r][c] = v;
 }

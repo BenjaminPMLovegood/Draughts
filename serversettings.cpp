@@ -10,7 +10,7 @@ ServerSettings::ServerSettings(QWidget *parent) :
     QDialog(parent), ui(new Ui::ServerSettings) {
     ui->setupUi(this);
 
-    setWindowFlags(Qt::Dialog | Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint);
+    setWindowFlags(Qt::Dialog | Qt::WindowMinMaxButtonsHint /*| Qt::WindowCloseButtonHint*/);
     this->setFixedSize(this->size());
 
     port = new QNumberInput(this);
